@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class Scorer : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    [SerializeField]
+    GameManager m_GameManager;
 
-    private void OnTriggerStay(Collider other)
+    private void OnCollisionStay(Collision collision)
     {
-        if (other.gameObject.CompareTag("Potato") && other.transform.position.y < -0.7f) {
-            Debug.Log("Goaaaaal");
-            Debug.Log(other.transform.position.y);
-
-            Destroy(other.gameObject);
+        if (collision.gameObject.CompareTag("Potato") && collision.transform.position.y < -0.7f)
+        {
+            Destroy(collision.gameObject);
+            this.m_GameManager.Score();
         }
     }
 }

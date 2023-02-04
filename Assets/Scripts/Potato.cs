@@ -14,8 +14,6 @@ public class Potato : MonoBehaviour
     void Start()
     {
         m_TimeAlive = 0f;
-
-
     }
 
     // Update is called once per frame
@@ -23,6 +21,7 @@ public class Potato : MonoBehaviour
     {
         m_TimeAlive += Time.deltaTime;
 
+        // Maybe change this to be related to speed?
         if (m_TimeAlive >= m_TTL)
         {
             Destroy(gameObject);
