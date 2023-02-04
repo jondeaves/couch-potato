@@ -20,13 +20,19 @@ public class TutorialManager : MonoBehaviour
     [SerializeField]
     private TMP_Text m_TutorialFinisherText;
 
+    [Tooltip("The text which shows how many players there are")]
+    [SerializeField]
+    private TMP_Text m_PlayerCountValue;
+
     private List<TMP_Text> m_TutorialStages = new List<TMP_Text>();
 
     private int m_TutorialStage = 1;
+    private int m_NumberOfPlayers = 1;
 
     // Start is called before the first frame update
     void Start()
     {
+        m_NumberOfPlayers = PlayerPrefs.GetInt("PlayerCount", 1);
         m_TutorialStages = m_TutorialContainer.GetComponentsInChildren<TMP_Text>().Where(child => child.gameObject.CompareTag("Tutorial")).ToList();
     }
 
@@ -39,6 +45,13 @@ public class TutorialManager : MonoBehaviour
             AdvanceTutorial();
         }
 
+        if (Input.GetKeyUp(KeyCode.UpArrow)|| Input.GetKeyUp(KeyCode.Joystick1Button1))
+            m_NumberOfPlayers++;
+        else if (Input.GetKeyUp(KeyCode.DownArrow) || Input.GetKeyUp(KeyCode.Joystick1Button2))
+            m_NumberOfPlayers--;
+
+        m_NumberOfPlayers = Mathf.Clamp(m_NumberOfPlayers, 1, 10);
+        m_PlayerCountValue.text = m_NumberOfPlayers.ToString();
 
         UpdateVisibleTutorial();
     }
@@ -52,6 +65,7 @@ public class TutorialManager : MonoBehaviour
         } else if (m_TutorialStage == m_TutorialStages.Count)
         {
             // Move to next scene
+            PlayerPrefs.SetInt("PlayerCount", m_NumberOfPlayers);
             SceneManager.LoadScene("NonVRGame");
         }
 

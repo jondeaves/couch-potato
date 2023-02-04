@@ -44,6 +44,9 @@ public class Launcher : MonoBehaviour
     [SerializeField]
     private float m_ThrowAgainDelay = 2f;
 
+    [SerializeField]
+    private GameManager m_GameManager;
+
     private Rigidbody m_Rigidbody;
 
     private float m_EyesDefaultY;
@@ -65,6 +68,9 @@ public class Launcher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!m_GameManager.IsPlaying)
+            return;
+
         UpdateInput();
         UpdateThrow();
 
