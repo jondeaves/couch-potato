@@ -40,7 +40,10 @@ public class Launcher : MonoBehaviour
     [SerializeField]
     private Slider m_SliderUI;
 
-    private GameObject m_PotatoInstance;
+    [Tooltip("How long after throwing a potato before you can throw another")]
+    [SerializeField]
+    private float m_ThrowAgainDelay = 2f;
+
     private Rigidbody m_Rigidbody;
 
     private float m_EyesDefaultY;
@@ -48,11 +51,15 @@ public class Launcher : MonoBehaviour
 
     private float m_ChargeTimer = 0f;
 
+    private List<GameObject> m_PotatoInstances;
+    private Timer m_ThrowTimer= new Timer();
+
     // Start is called before the first frame update
     void Start()
     {
         m_Rigidbody= GetComponent<Rigidbody>();
         m_EyesDefaultY = m_Eyes.transform.position.y;
+        m_PotatoInstances =  new List<GameObject>();
     }
 
     // Update is called once per frame
@@ -60,22 +67,24 @@ public class Launcher : MonoBehaviour
     {
         UpdateInput();
         UpdateThrow();
+
+        m_ThrowTimer.Update();
     }
 
     private void UpdateThrow()
     {
-        if (m_PotatoInstance != null && !m_PotatoInstance.activeInHierarchy)
-        {
-            m_PotatoInstance = null;
-        }
-        else if (m_PotatoInstance != null)
-        {
+        float chargedThrowPower = m_ChargeTimer / m_ChargeTime;
+
+        if (chargedThrowPower > 0)
+            m_SliderUI.gameObject.SetActive(true);
+        else
+            m_SliderUI.gameObject.SetActive(false);
+
+        // No point in doing anything else if we are cooling down
+        if (m_ThrowTimer.IsRunning)
             return;
-        }
 
         // Hold to charge a throw
-        float chargedThrowPower = m_ChargeTimer / m_ChargeTime;
-        m_SliderUI.value = 0f;
         if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Joystick1Button0))
         {
             m_SliderUI.value = chargedThrowPower;
@@ -83,11 +92,16 @@ public class Launcher : MonoBehaviour
         }
         else if (Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Joystick1Button0))
         {
-            Debug.Log(string.Format("Throwing at {0}% of max power by holding for {1} seconds", (Mathf.Clamp(chargedThrowPower, 0.25f, 1f) * 100f).ToString(), m_ChargeTimer.ToString()));
+            Debug.Log(string.Format("Throwing at {0}% of max power", (Mathf.Clamp(chargedThrowPower, 0.25f, 1f) * 100f).ToString()));
             m_ChargeTimer = 0f;
+            m_SliderUI.value = 0f;
 
-            m_PotatoInstance = GameObject.Instantiate(m_Potato, m_Hand.transform.position, Quaternion.identity);
-            m_PotatoInstance.GetComponent<Rigidbody>().AddForce(m_Hand.transform.forward * m_ThrowPower * chargedThrowPower);
+            GameObject pInstance = GameObject.Instantiate(m_Potato, m_Hand.transform.position, Quaternion.identity);
+            pInstance.GetComponent<Rigidbody>().AddForce(m_Hand.transform.forward * m_ThrowPower * Mathf.Clamp(chargedThrowPower, 0.25f, 1f));
+
+            m_PotatoInstances.Add(pInstance);
+
+            m_ThrowTimer.StartTimer(m_ThrowAgainDelay);
         }
     }
 

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Potato
   - Launcher
+  - Tutorial
   layers:
   - Default
   - TransparentFX
