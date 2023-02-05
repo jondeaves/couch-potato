@@ -54,6 +54,7 @@ public class Launcher : MonoBehaviour
     private float m_EyeMovementRangeTop = 0.4f;
 
     private float m_ChargeTimer = 0f;
+    private float m_ThrowDelay = 0.2f;
 
     private List<GameObject> m_PotatoInstances;
     private Timer m_ThrowTimer= new Timer();
@@ -69,7 +70,7 @@ public class Launcher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!m_GameManager.IsPlaying)
+        if (!m_GameManager.IsPlaying || m_GameManager.RoundTimer < m_ThrowDelay)
             return;
 
         UpdateInput();
@@ -104,6 +105,7 @@ public class Launcher : MonoBehaviour
             m_SliderUI.value = 0f;
 
             GameObject pInstance = GameObject.Instantiate(m_Potato, m_Hand.transform.position, Quaternion.identity);
+            pInstance.transform.rotation = UnityEngine.Random.rotation;
             pInstance.GetComponent<Rigidbody>().AddForce(m_ThrowPower * Mathf.Clamp(chargedThrowPower, 0.25f, 1f) * m_Hand.transform.forward);
 
             m_PotatoInstances.Add(pInstance);

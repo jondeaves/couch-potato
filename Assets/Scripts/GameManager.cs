@@ -38,6 +38,7 @@ public class GameManager : MonoBehaviour
     private int m_PlayersCompletedRound = 0;
 
     public bool IsPlaying {  get { return m_ActivePlayer !=-1; } }
+    public float RoundTimer { get { return m_RoundTime; } }
 
     private void Start()
     {
