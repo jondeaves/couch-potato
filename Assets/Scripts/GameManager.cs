@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    [Tooltip("The object that controls launcher location")]
+    [SerializeField]
+    private GameObject m_Launcher;
+
     [Tooltip("The container for label and value of the score UI text")]
     [SerializeField]
     private GameObject m_ScoreContainer;
@@ -54,7 +59,7 @@ public class GameManager : MonoBehaviour
             m_NextUpContainer.SetActive(false);
             m_CompleteContainer.SetActive(false);
             m_RoundTime += Time.deltaTime;
-            m_ScoreValue.text = string.Format("{0} seconds", Math.Round(m_RoundTime, 2).ToString());
+            m_ScoreValue.text = string.Format("{0} seconds", ((int)m_RoundTime).ToString());
         }
         else if (m_PlayersCompletedRound >= m_PlayerScores.Length) {
             m_NextUpContainer.SetActive(false);
@@ -106,6 +111,16 @@ public class GameManager : MonoBehaviour
 
             if(Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Joystick1Button0))
             {
+                // Randomize player position and direction
+                var vector2 = UnityEngine.Random.insideUnitCircle.normalized * 8f;
+                m_Launcher.transform.position = new Vector3(vector2.x, 0, vector2.y);
+
+                var lookPos = Vector3.zero - m_Launcher.transform.position;
+                lookPos.y = 0;
+                m_Launcher.transform.rotation = Quaternion.LookRotation(lookPos) * Quaternion.Euler(0, UnityEngine.Random.Range(-60, 60), 0);
+
+
+                // Change to new player
                 m_LastActivePlayer = m_ActivePlayer;
                 m_ActivePlayer = nextPlayerDue;
             }
