@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private TMP_Text m_WinnerLabel;
 
+    [SerializeField]
+    private AudioClip m_DingSoundClip;
+
     private TMP_Text m_ScoreValue;
     
     private float m_RoundTime = 0f;
@@ -138,5 +141,7 @@ public class GameManager : MonoBehaviour
 
         m_LastActivePlayer = m_ActivePlayer;
         m_ActivePlayer = -1;
+
+        GetComponent<AudioSource>().PlayOneShot(m_DingSoundClip);
     }
 }

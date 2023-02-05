@@ -47,6 +47,9 @@ public class Launcher : MonoBehaviour
     [SerializeField]
     private GameManager m_GameManager;
 
+    [SerializeField]
+    private AudioClip m_ThrowAudioClip;
+
     private Rigidbody m_Rigidbody;
 
     private float m_EyesDefaultY;
@@ -111,6 +114,8 @@ public class Launcher : MonoBehaviour
             m_PotatoInstances.Add(pInstance);
 
             m_ThrowTimer.StartTimer(m_ThrowAgainDelay);
+
+            GetComponent<AudioSource>().PlayOneShot(m_ThrowAudioClip);
         }
     }
 
