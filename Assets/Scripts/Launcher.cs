@@ -50,7 +50,8 @@ public class Launcher : MonoBehaviour
     private Rigidbody m_Rigidbody;
 
     private float m_EyesDefaultY;
-    private float m_EyeMovementRange = 0.2f;
+    private float m_EyeMovementRangeBottom = 0.8f;
+    private float m_EyeMovementRangeTop = 0.4f;
 
     private float m_ChargeTimer = 0f;
 
@@ -103,7 +104,7 @@ public class Launcher : MonoBehaviour
             m_SliderUI.value = 0f;
 
             GameObject pInstance = GameObject.Instantiate(m_Potato, m_Hand.transform.position, Quaternion.identity);
-            pInstance.GetComponent<Rigidbody>().AddForce(m_Hand.transform.forward * m_ThrowPower * Mathf.Clamp(chargedThrowPower, 0.25f, 1f));
+            pInstance.GetComponent<Rigidbody>().AddForce(m_ThrowPower * Mathf.Clamp(chargedThrowPower, 0.25f, 1f) * m_Hand.transform.forward);
 
             m_PotatoInstances.Add(pInstance);
 
@@ -120,7 +121,7 @@ public class Launcher : MonoBehaviour
 
         if (Input.GetAxis("Vertical") != 0) {
             // Clamp to default +/- m_EyeMovementRange
-            float updatedY = Mathf.Clamp(m_Eyes.transform.position.y + (0.1f * Input.GetAxis("Vertical") * Time.deltaTime * m_LookSpeed), m_EyesDefaultY - m_EyeMovementRange, m_EyesDefaultY + m_EyeMovementRange);
+            float updatedY = Mathf.Clamp(m_Eyes.transform.position.y + (0.1f * Input.GetAxis("Vertical") * Time.deltaTime * m_LookSpeed), m_EyesDefaultY - m_EyeMovementRangeBottom, m_EyesDefaultY + m_EyeMovementRangeTop);
 
             m_Eyes.transform.position = new Vector3(
                 m_Eyes.transform.position.x,

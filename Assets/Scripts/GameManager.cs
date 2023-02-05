@@ -98,6 +98,11 @@ public class GameManager : MonoBehaviour
             m_NextUpContainer.SetActive(true);
             m_NextUpContainer.GetComponentsInChildren<TMP_Text>()[0].text = string.Format("Player {0} is up next", nextPlayerDue);
 
+            // Delete the current 'taters
+            
+            Potato[] potatoes = FindObjectsOfType<Potato>();
+            FindObjectsOfType<Potato>().ToList().ForEach(potato => Destroy(potato.gameObject));
+
             if(Input.GetKeyUp(KeyCode.Space) || Input.GetKeyUp(KeyCode.Joystick1Button0))
             {
                 m_LastActivePlayer = m_ActivePlayer;
